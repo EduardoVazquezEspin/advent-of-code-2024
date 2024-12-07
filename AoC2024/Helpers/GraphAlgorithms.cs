@@ -64,33 +64,30 @@ public static class GraphAlgorithms
         where TN :notnull 
         where TE : IEdge<TN>
     {
-        var colorMap = new ColorMap<TN>();
+        var quotient = new Quotient<TN>();
         foreach (var edge in edges)
         {
-            if(colorMap.GetColor(edge.From) == null)
-                colorMap.SetColor(edge.From);
-            if(colorMap.GetColor(edge.To) == null)
-                colorMap.SetColor(edge.To);
+            quotient.SetClass(edge.From);
+            quotient.SetClass(edge.To);
         }
 
-        if (colorMap.TotalColors < 2)
+        if (quotient.ClassCount < 2)
             throw new Exception("Not Enough Nodes");
 
         var internalEdges = edges.Select(edge => edge).ToList();
         Random rnd = new Random();
         
-        while (colorMap.TotalColors > 2 && internalEdges.Any())
+        while (quotient.ClassCount > 2 && internalEdges.Any())
         {
             var index = rnd.Next(internalEdges.Count);
             var edge = internalEdges[index];
-            var color = colorMap.GetColor(edge.From);
-            colorMap.SetColor(edge.To, (uint) color!);
+            quotient.SetEqual(edge.From, edge.To);
             internalEdges.RemoveAt(index);
         }
 
-        if (colorMap.TotalColors > 2)
+        if (quotient.ClassCount > 2)
             throw new Exception("Graph is not Connected with > 2 Connected Subgraphs");
 
-        return internalEdges.Where(edge => !colorMap.Compare(edge.From, edge.To)).ToList();
+        return internalEdges.Where(edge => !quotient.AreEqual(edge.From, edge.To)).ToList();
     }
 }
