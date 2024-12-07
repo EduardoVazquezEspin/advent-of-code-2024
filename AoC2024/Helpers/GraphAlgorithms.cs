@@ -1,3 +1,5 @@
+using AoC2024.Classes;
+
 namespace AoC2024.Helpers;
 
 public static class GraphAlgorithms
@@ -9,24 +11,21 @@ public static class GraphAlgorithms
     }
     public static List<T> GetTopologicalOrder<T>(List<T> nodes, Func<T, List<T>> goesTo) where T : notnull
     {
-        List<GetTopologicalOrderQueueNode<T>> queue = new List<GetTopologicalOrderQueueNode<T>>();
+        var queue = new List<GetTopologicalOrderQueueNode<T>>();
         nodes.ForEach(node =>        
             queue.Add( new GetTopologicalOrderQueueNode<T>
             {
                 Add = false,
                 Node = node
             })
-            );   
+            );
 
-        GetTopologicalOrderQueueNode<T> top;
         Dictionary<T, bool> hasBeenAdded = new Dictionary<T, bool>();
         var result = new List<T>(); 
         while (queue.Any())
         {
-            top = queue[^1];
+            var top = queue[^1];
             queue.RemoveAt(queue.Count-1);
-            var xivato = top.Node;
-            var isAdd = top.Add;
             if (top.Add && !hasBeenAdded[top.Node])
             {
                 hasBeenAdded.Remove(top.Node);
@@ -53,5 +52,45 @@ public static class GraphAlgorithms
             }
         }
         return result;
+    }
+
+    public interface IEdge<out TNode> where TNode : notnull
+    {
+        public TNode From { get; }
+        public TNode To { get; }
+    }
+    
+    public static List<TE> KargersMinCut<TN, TE> (List<TE> edges) 
+        where TN :notnull 
+        where TE : IEdge<TN>
+    {
+        var colorMap = new ColorMap<TN>();
+        foreach (var edge in edges)
+        {
+            if(colorMap.GetColor(edge.From) == null)
+                colorMap.SetColor(edge.From);
+            if(colorMap.GetColor(edge.To) == null)
+                colorMap.SetColor(edge.To);
+        }
+
+        if (colorMap.TotalColors < 2)
+            throw new Exception("Not Enough Nodes");
+
+        var internalEdges = edges.Select(edge => edge).ToList();
+        Random rnd = new Random();
+        
+        while (colorMap.TotalColors > 2 && internalEdges.Any())
+        {
+            var index = rnd.Next(internalEdges.Count);
+            var edge = internalEdges[index];
+            var color = colorMap.GetColor(edge.From);
+            colorMap.SetColor(edge.To, (uint) color!);
+            internalEdges.RemoveAt(index);
+        }
+
+        if (colorMap.TotalColors > 2)
+            throw new Exception("Graph is not Connected with > 2 Connected Subgraphs");
+
+        return internalEdges.Where(edge => !colorMap.Compare(edge.From, edge.To)).ToList();
     }
 }
