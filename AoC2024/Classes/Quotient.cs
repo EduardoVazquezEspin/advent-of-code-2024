@@ -128,4 +128,19 @@ public class Quotient<T> where T : notnull
             return false;
         return color1 == color2;
     }
+
+    public List<List<T>> GetAllClasses()
+    {
+        var nodes = _nodeMap!.Keys.ToList();
+        var result = new List<List<T>>();
+        foreach (var node in nodes)
+        {
+            var matching = result.Where(list => AreEqual(node, list[0])).ToArray();
+            if (!matching.Any())
+                result.Add(new List<T>{ node });
+            else
+                matching[0].Add(node);
+        }
+        return result;
+    }
 }

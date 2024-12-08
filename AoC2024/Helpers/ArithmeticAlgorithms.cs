@@ -7,7 +7,7 @@ public static class ArithmeticAlgorithms
     public static int GreatestCommonDivisor(int[] values)
     {
         if (values.Length == 0)
-            throw new Exception("Infinite Value Achieved");
+            return 0;
         
         int result = values[0];
         for(int i= 1; i<values.Length; i++)

@@ -53,6 +53,29 @@ public static class GraphAlgorithms
         }
         return result;
     }
+    
+    public struct ConnectivityResult<TN> where TN : notnull
+    {
+        public int Connectivity { get; init; }
+        public Quotient<TN> Quotient;
+    }
+
+    public static ConnectivityResult<TN> GetConnectivity<TN>(
+        List<TN> nodes, 
+        Func<TN, List<TN>> goesTo
+    ) where TN : notnull
+    {
+        var quotient = new Quotient<TN>(nodes);
+        
+        foreach (var node in nodes)
+        {
+            var neighbours = goesTo(node);
+            foreach (var neighbour in neighbours)
+                quotient.SetEqual(node, neighbour);
+        }
+
+        return new ConnectivityResult<TN> {Connectivity = quotient.ClassCount, Quotient = quotient};
+    }
 
     public interface IEdge<out TNode> where TNode : notnull
     {
