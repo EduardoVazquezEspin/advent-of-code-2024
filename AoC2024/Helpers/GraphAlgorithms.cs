@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AoC2024.Classes;
 
 namespace AoC2024.Helpers;
@@ -13,11 +14,11 @@ public static class GraphAlgorithms
     {
         var queue = new List<GetTopologicalOrderQueueNode<T>>();
         nodes.ForEach(node =>        
-            queue.Add( new GetTopologicalOrderQueueNode<T>
-            {
-                Add = false,
-                Node = node
-            })
+                queue.Add( new GetTopologicalOrderQueueNode<T>
+                {
+                    Add = false,
+                    Node = node
+                })
             );
 
         Dictionary<T, bool> hasBeenAdded = new Dictionary<T, bool>();
@@ -113,4 +114,72 @@ public static class GraphAlgorithms
 
         return internalEdges.Where(edge => !quotient.AreEqual(edge.From, edge.To)).ToList();
     }
+
+    public static void DepthFirstSearch<T>(T[] startingNodes, Func<T, T[]> getNeighbours, Action<T> action) where T: notnull
+    {
+        var stack = new List<T>(startingNodes);
+        var hasBeenVisited = new HashSet<T>();
+        while (stack.Any())
+        {
+            var top = stack[^1];
+            stack.RemoveAt(stack.Count - 1);
+            if (!hasBeenVisited.Contains(top))
+            {
+                hasBeenVisited.Add(top);
+                action(top);
+                var neighbours = getNeighbours(top);
+                foreach (var neighbour in neighbours)
+                    stack.Add(neighbour);
+            }
+        }
+    }
+    
+    private struct BreadthFirstSearchNode<T>
+    {
+        public T Node { get; init; }
+        public int Distance { get; init; }
+    }
+
+    public static Dictionary<T, int> BreadthFirstSearch<T>(T[] startingNodes, Func<T, T[]> getNeighbours, T? stoppingNode = default, Action<T>? action = null) where T: IEquatable<T>
+    {
+        var stack = new List<BreadthFirstSearchNode<T>>(
+            startingNodes.Select(node => new BreadthFirstSearchNode<T>
+                {
+                    Node = node,
+                    Distance = 0
+                })
+            );
+        if(action != null)
+            foreach (var node in startingNodes)
+                action(node);
+            
+        var distance = new Dictionary<T, int>();
+        foreach (var node in startingNodes)
+            distance.Add(node, 0);
+        
+        while (stack.Any())
+        {
+            var top = stack[0];
+            stack.RemoveAt(0);
+
+            var node = top.Node;
+            var dist = top.Distance;
+            var neighbours = getNeighbours(node).Where(it => !distance.ContainsKey(it));
+            foreach (var neighbour in neighbours)
+            {
+                distance.Add(neighbour, dist + 1);
+                if(action != null)
+                    action(node);
+                if (stoppingNode != null && stoppingNode.Equals(neighbour))
+                    return distance;
+                stack.Add(new BreadthFirstSearchNode<T>{ Node = neighbour, Distance = dist +1 });
+            }
+        }
+
+        return distance;
+    }
+    
+    public static Dictionary<T, int> BreadthFirstSearch<T>(T startingNode, Func<T, T[]> getNeighbours, T? stoppingNode = default, Action<T>? action = null)
+        where T: IEquatable<T> =>
+        BreadthFirstSearch(new []{ startingNode }, getNeighbours, stoppingNode, action);
 }
