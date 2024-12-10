@@ -39,6 +39,9 @@ public class CharMap<T> where T : new()
     public bool IsInBounds(Tuple<int, int> position, out T value) => IsInBounds(position.Item1, position.Item2, out value);
     public bool IsInBounds(Tuple<int, int> position) => IsInBounds(position.Item1, position.Item2, out T _);
 
+    public T Get(int i, int j) => _map[i][j];
+    public T Get(Tuple<int, int> position) => _map[position.Item1][position.Item2];
+
     public List<TR> MapAllCells<TR>(Func<T, int, int, TR> mapper)
     {
         var result = new List<TR>();
@@ -84,16 +87,36 @@ public class CharMap<T> where T : new()
                 action(cell);
     }
 
-    public void Print(Func<T, char> show)
+    public void Print(Func<T, int, int, object> show)
     {
-        foreach (var row in _map)
+        for(int i = 0; i< _map.Length; i++)
         {
-            foreach (var cell in row)
-                Console.Write(show(cell));
+            var row = _map[i];
+            for(int j = 0; j<row.Length; j++)
+                Console.Write(show(row[j], i, j).ToString());
             
             Console.WriteLine();
         }
     }
+
+    public void Print(Func<T, object> show) => Print((cell, _, j) => show(cell));
+
+    public TResult[][] Copy<TResult>(Func<T, int, int, TResult> mapper)
+    {
+        var result = new TResult[_map.Length][];
+        for (int i = 0; i < _map.Length; i++)
+        {
+            var originalRow = _map[i];
+            var row = new TResult[originalRow.Length];
+            for (int j = 0; j < originalRow.Length; j++)
+                row[j] = mapper(originalRow[j], i, j);
+            result[i] = row;
+        }
+
+        return result;
+    }
+    public TResult[][] Copy<TResult>(Func<T, TResult> mapper) => Copy(((cell, _, _) => mapper(cell)));
+    public TResult[][] Copy<TResult>(Func<TResult> mapper) => Copy(((_, _, _) => mapper()));
 }
 
 public class CharMap : CharMap<char>
