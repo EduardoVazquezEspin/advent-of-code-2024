@@ -15,4 +15,17 @@ public static class ArithmeticAlgorithms
 
         return result;
     }
+
+    public static uint NumberOfDigits(IFormattable number) => (uint) number.ToString()!.Length;
+    
+    public static ulong Power(ulong x, uint n)
+    {
+        if (n <= 0)
+            return 1;
+        var squareRoot = Power(x, n / 2);
+        var result = squareRoot * squareRoot;
+        if (n % 2 == 1)
+            result *= x;
+        return result;
+    }
 }
