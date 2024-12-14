@@ -19,6 +19,20 @@ public class CharMap<T> where T : new()
 
     public CharMap(string[] input, Func<char, Tuple<int, int>, T> mapper) : this(input, (c, i, j) => mapper(c, new Tuple<int, int>(i, j))) { }
     public CharMap(string[] input, Func<char, T> mapper) : this(input, (c, _, _) => mapper(c)) { }
+    
+    public CharMap(int height, int width, Func<int, int, T> mapper)
+    {
+        _map = new T[height][];
+        for (int i = 0; i < height; i++)
+        {
+            var row = new T[width];
+            for (int j = 0; j < width; j++)
+                row[j] = mapper(i, j);
+            _map[i] = row;
+        }
+    }
+
+    public CharMap(int height, int width, Func<T> mapper) : this(height, width, (_, _) => mapper()) { }
 
     public bool IsInBounds(int i, int j, out T value)
     {
@@ -41,6 +55,9 @@ public class CharMap<T> where T : new()
 
     public T Get(int i, int j) => _map[i][j];
     public T Get(Tuple<int, int> position) => _map[position.Item1][position.Item2];
+    
+    public void Set(int i, int j, T value) => _map[i][j] = value;
+    public void Set(Tuple<int, int> position, T value) => _map[position.Item1][position.Item2] = value;
 
     public List<TR> MapAllCells<TR>(Func<T, int, int, TR> mapper)
     {
@@ -122,6 +139,8 @@ public class CharMap<T> where T : new()
 public class CharMap : CharMap<char>
 {
     public CharMap(string[] input) : base(input, c => c) { }
+    
+    public CharMap(int height, int width, char value = '.') : base(height, width, () => value) { }
 
     public void Print()
     {
