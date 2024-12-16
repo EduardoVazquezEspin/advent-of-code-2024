@@ -4,10 +4,12 @@ public class CharMap<T> where T : new()
 {
     private readonly T[][] _map;
     
-    public CharMap(string[] input, Func<char, int, int, T> mapper)
+    public CharMap(string[] input, Func<char, int, int, T> mapper, int start = 0, int end = -1)
     {
-        _map = new T[input.Length][];
-        for (int i = 0; i < input.Length; i++)
+        var actualEnd = end == -1 ? input.Length : end;
+        var actualLength = end - start;
+        _map = new T[actualLength][];
+        for (int i = start; i < actualEnd; i++)
         {
             var originalRow = input[i];
             var row = new T[originalRow.Length];
@@ -17,8 +19,8 @@ public class CharMap<T> where T : new()
         }
     }
 
-    public CharMap(string[] input, Func<char, Tuple<int, int>, T> mapper) : this(input, (c, i, j) => mapper(c, new Tuple<int, int>(i, j))) { }
-    public CharMap(string[] input, Func<char, T> mapper) : this(input, (c, _, _) => mapper(c)) { }
+    public CharMap(string[] input, Func<char, Tuple<int, int>, T> mapper, int start = 0, int end = -1) : this(input, (c, i, j) => mapper(c, new Tuple<int, int>(i, j)), start, end) { }
+    public CharMap(string[] input, Func<char, T> mapper, int start = 0, int end = -1) : this(input, (c, _, _) => mapper(c), start, end) { }
     
     public CharMap(int height, int width, Func<int, int, T> mapper)
     {
@@ -58,6 +60,9 @@ public class CharMap<T> where T : new()
     
     public void Set(int i, int j, T value) => _map[i][j] = value;
     public void Set(Tuple<int, int> position, T value) => _map[position.Item1][position.Item2] = value;
+
+    public int Height => _map.Length;
+    public int Width => _map[0].Length;
 
     public List<TR> MapAllCells<TR>(Func<T, int, int, TR> mapper)
     {
@@ -112,11 +117,11 @@ public class CharMap<T> where T : new()
             for(int j = 0; j<row.Length; j++)
                 Console.Write(show(row[j], i, j).ToString());
             
-            Console.WriteLine();
+            Console.WriteLine("");
         }
     }
 
-    public void Print(Func<T, object> show) => Print((cell, _, j) => show(cell));
+    public void Print(Func<T, object> show) => Print((cell, _, _) => show(cell));
 
     public TResult[][] Copy<TResult>(Func<T, int, int, TResult> mapper)
     {
@@ -138,9 +143,10 @@ public class CharMap<T> where T : new()
 
 public class CharMap : CharMap<char>
 {
-    public CharMap(string[] input) : base(input, c => c) { }
-    
-    public CharMap(int height, int width, char value = '.') : base(height, width, () => value) { }
+    public CharMap(string[] input, int start = 0, int end = -1) : base(input, c => c, start, end) { }
+    public CharMap(int height, int width, Func<int, int, char> mapper) : base(height, width, mapper) { }
+    public CharMap(int height, int width, Func<char> mapper) : this(height, width, (_, _) => mapper()) { }
+    public CharMap(int height, int width, char value = '.') : this(height, width, () => value) { }
 
     public void Print()
     {
