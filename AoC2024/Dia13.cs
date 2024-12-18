@@ -122,7 +122,7 @@ public class Dia13 : ProblemSolution<Dia13Input>
             : SolveRank2System(stats, determinant, out solution);
     }
     
-    public override IFormattable Part1(Dia13Input input)
+    public override object Part1(Dia13Input input)
     {
         return input.MachineStatsList
             .Aggregate(0L, (acc, machineStats) => 
@@ -131,7 +131,7 @@ public class Dia13 : ProblemSolution<Dia13Input>
                     : acc);
     }
 
-    public override IFormattable Part2(Dia13Input input)
+    public override object Part2(Dia13Input input)
     {
         return input.MachineStatsList
             .Aggregate(0L, (acc, machineStats) => 

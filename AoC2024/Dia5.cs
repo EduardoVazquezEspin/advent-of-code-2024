@@ -85,7 +85,7 @@ public class Dia5: ProblemSolution<Dia5Input>
         return GraphAlgorithms.GetTopologicalOrder(order, goesTo);
     }
 
-    public override IFormattable Part1(Dia5Input input)
+    public override object Part1(Dia5Input input)
     {
         var total = 0;
         foreach (var order in input.UpdateOrder)
@@ -97,7 +97,7 @@ public class Dia5: ProblemSolution<Dia5Input>
         return total;
     }
 
-    public override IFormattable Part2(Dia5Input input)
+    public override object Part2(Dia5Input input)
     {
         var total = 0;
         foreach (var order in input.UpdateOrder)

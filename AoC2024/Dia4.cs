@@ -61,7 +61,7 @@ public class Dia4 : ProblemSolution<string[]>
         });
     }
 
-    public override IFormattable Part1(string[] input)
+    public override object Part1(string[] input)
     {
         var total = 0;
         for(int x = 0; x<input.Length; x++)
@@ -84,7 +84,7 @@ public class Dia4 : ProblemSolution<string[]>
         return masTotal == 2;
     }
 
-    public override IFormattable Part2(string[] input)
+    public override object Part2(string[] input)
     {
         var total = 0;
         for(int x = 1; x<input.Length - 1; x++)

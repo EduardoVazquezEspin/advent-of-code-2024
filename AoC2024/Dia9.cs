@@ -95,7 +95,7 @@ public class Dia9 : ProblemSolution<Dia9Input>
         Console.WriteLine();
     }
 
-    public override IFormattable Part1(Dia9Input input)
+    public override object Part1(Dia9Input input)
     {
         int memoryIndex = 0;
         int locationIndex = input.FileLocations.Count - 1;
@@ -104,7 +104,7 @@ public class Dia9 : ProblemSolution<Dia9Input>
         return EvaluateMemory(input.Memory);
     }
 
-    public override IFormattable Part2(Dia9Input input)
+    public override object Part2(Dia9Input input)
     {
         for (int locationIndex = input.FileLocations.Count - 1; locationIndex >= 0; locationIndex--)
             Defragmentate(input.Memory, input.FileLocations[locationIndex]);

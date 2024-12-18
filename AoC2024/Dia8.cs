@@ -52,7 +52,7 @@ public class Dia8 : ProblemSolution<Dia8Input>
         return true;
     }
 
-    public override IFormattable Part1(Dia8Input input)
+    public override object Part1(Dia8Input input)
     {
         var nodeMap = new char[input.Map.Length][];
         for (int i = 0; i < nodeMap.Length; i++)
@@ -86,7 +86,7 @@ public class Dia8 : ProblemSolution<Dia8Input>
         return total;
     }
 
-    public override IFormattable Part2(Dia8Input input)
+    public override object Part2(Dia8Input input)
     {
         var nodeMap = new char[input.Map.Length][];
         for (int i = 0; i < nodeMap.Length; i++)

@@ -45,7 +45,7 @@ public class Dia8Alt1 : ProblemSolution<Dia8Alt1Input>
         };
     }
 
-    public override IFormattable Part1(Dia8Alt1Input input)
+    public override object Part1(Dia8Alt1Input input)
     {
         foreach (var list in input.AntennaSets.Values)
         {
@@ -66,7 +66,7 @@ public class Dia8Alt1 : ProblemSolution<Dia8Alt1Input>
         return input.Map.MapAllCells(c => c.HasAntenna ? 1 : 0).Sum();
     }
 
-    public override IFormattable Part2(Dia8Alt1Input input)
+    public override object Part2(Dia8Alt1Input input)
     {
         foreach (var list in input.AntennaSets.Values)
         {

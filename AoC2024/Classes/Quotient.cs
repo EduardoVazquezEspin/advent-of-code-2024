@@ -82,6 +82,11 @@ public class Quotient<T> where T : notnull
         SetClass(node2, color!);
     }
 
+    public bool HasClass(T node)
+    {
+        return _nodeMap!.TryGetValue(node, out NodeClass? _);
+    }
+
     private NodeClass? GetClass(T node)
     {
         if (!_nodeMap!.TryGetValue(node, out NodeClass? color))

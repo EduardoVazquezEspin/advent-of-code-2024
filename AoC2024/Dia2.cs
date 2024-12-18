@@ -56,7 +56,7 @@ public class Dia2 : ProblemSolution<List<List<int>>>
         return IsReportSafe(copy);
     }
 
-    public override IFormattable Part1(List<List<int>> input)
+    public override object Part1(List<List<int>> input)
     {
         var total = 0;
         for (int i = 0; i < input.Count; i++)
@@ -64,7 +64,7 @@ public class Dia2 : ProblemSolution<List<List<int>>>
         return total;
     }
 
-    public override IFormattable Part2(List<List<int>> input)
+    public override object Part2(List<List<int>> input)
     {
         var total = 0;
         for (int i = 0; i < input.Count; i++)

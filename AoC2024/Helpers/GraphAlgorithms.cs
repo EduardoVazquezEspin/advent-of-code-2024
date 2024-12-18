@@ -140,7 +140,12 @@ public static class GraphAlgorithms
         public int Distance { get; init; }
     }
 
-    public static Dictionary<T, int> BreadthFirstSearch<T>(T[] startingNodes, Func<T, T[]> getNeighbours, T? stoppingNode = default, Action<T>? action = null) where T: IEquatable<T>
+    public static Dictionary<T, int> BreadthFirstSearch<T>(
+        T[] startingNodes, 
+        Func<T, T[]> getNeighbours, 
+        Predicate<T>? stop = null,
+        Action<T>? action = null
+    ) where T: notnull
     {
         var stack = new List<BreadthFirstSearchNode<T>>(
             startingNodes.Select(node => new BreadthFirstSearchNode<T>
@@ -170,7 +175,7 @@ public static class GraphAlgorithms
                 distance.Add(neighbour, dist + 1);
                 if(action != null)
                     action(node);
-                if (stoppingNode != null && stoppingNode.Equals(neighbour))
+                if (stop != null && stop(neighbour))
                     return distance;
                 stack.Add(new BreadthFirstSearchNode<T>{ Node = neighbour, Distance = dist +1 });
             }
@@ -179,7 +184,50 @@ public static class GraphAlgorithms
         return distance;
     }
     
-    public static Dictionary<T, int> BreadthFirstSearch<T>(T startingNode, Func<T, T[]> getNeighbours, T? stoppingNode = default, Action<T>? action = null)
+    public static Dictionary<T, int> BreadthFirstSearch<T>(T startingNode, Func<T, T[]> getNeighbours, Predicate<T>? stop = null, Action<T>? action = null)
         where T: IEquatable<T> =>
-        BreadthFirstSearch(new []{ startingNode }, getNeighbours, stoppingNode, action);
+        BreadthFirstSearch(new []{ startingNode }, getNeighbours, stop, action);
+    
+    public static Dictionary<T, int> Dijkstra<T>(
+        T[] startingNodes, 
+        Func<T, Tuple<T, int>[]> getNeighbours,
+        Predicate<T>? stop = null,
+        Action<T>? action = null
+    ) where T: notnull
+    {
+        var priorityQueue = new PriorityQueue<T, int>();
+        foreach(var start in startingNodes)
+            priorityQueue.Enqueue(start, 0);
+
+        if(action != null)
+            foreach (var node in startingNodes)
+                action(node);
+            
+        var distance = new Dictionary<T, int>();
+        
+        while (priorityQueue.TryDequeue(out T? top, out int priority))
+        {
+            if(distance.ContainsKey(top))
+                continue;
+            distance.Add(top, priority);
+            if(action != null)
+                action(top);
+            if (stop != null && stop(top))
+                return distance;
+            var neighbours = getNeighbours(top).Where(neighbour => !distance.ContainsKey(neighbour.Item1));
+            foreach (var (neighbour, dist) in neighbours)
+                priorityQueue.Enqueue(neighbour, priority + dist);
+            
+        }
+
+        return distance;
+    }
+
+    public static Dictionary<T, int> Dijkstra<T>(
+        T startingNode,
+        Func<T, Tuple<T, int>[]> getNeighbours,
+        Predicate<T>? stop = null,
+        Action<T>? action = null
+    ) where T : notnull =>
+        Dijkstra(new [] {startingNode}, getNeighbours, stop, action);
 }

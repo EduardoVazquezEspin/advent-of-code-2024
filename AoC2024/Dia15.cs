@@ -84,7 +84,7 @@ public class Dia15 : ProblemSolution<Dia15Input>
         }).Sum();
     
 
-    public override IFormattable Part1(Dia15Input input)
+    public override object Part1(Dia15Input input)
     {
         var playerPosition = input.PlayerPosition;
         foreach (var instruction in input.Instructions)
@@ -173,7 +173,7 @@ public class Dia15 : ProblemSolution<Dia15Input>
         return new Tuple<int, int>(playerPosition.Item1 + vector.Item1, playerPosition.Item2 + vector.Item2);
     }
 
-    public override IFormattable Part2(Dia15Input input)
+    public override object Part2(Dia15Input input)
     {
         var result = DuplicateMap(input.Map);
         var playerPosition = result.PlayerPosition;

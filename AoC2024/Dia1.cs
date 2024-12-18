@@ -20,7 +20,7 @@ public class Dia1 : ProblemSolution<Tuple<List<int>, List<int>>>
         return new Tuple<List<int>, List<int>>(firstList, secondList);
     }
 
-    public override IFormattable Part1(Tuple<List<int>, List<int>> input)
+    public override object Part1(Tuple<List<int>, List<int>> input)
     {
         var firstList = input.Item1;
         var secondList = input.Item2;
@@ -32,7 +32,7 @@ public class Dia1 : ProblemSolution<Tuple<List<int>, List<int>>>
         return total;
     }
 
-    public override IFormattable Part2(Tuple<List<int>, List<int>> input)
+    public override object Part2(Tuple<List<int>, List<int>> input)
     {
         var firstList = input.Item1;
         var secondList = input.Item2;

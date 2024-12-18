@@ -56,7 +56,7 @@ public class Dia11 : ProblemSolution<Dia11Input>
         return new ulong[] {2024 * stone};
     }
     
-    public override IFormattable Part1(Dia11Input input)
+    public override object Part1(Dia11Input input)
     {
         var stoneList = input.Stones;
         for (int i = 0; i < input.Iterations; i++)
@@ -65,7 +65,7 @@ public class Dia11 : ProblemSolution<Dia11Input>
         return stoneList.Count;
     }
 
-    public override IFormattable Part2(Dia11Input input)
+    public override object Part2(Dia11Input input)
     {
         var dictionary = new Dictionary<ulong, ulong>();
         foreach(var stone in input.Stones)

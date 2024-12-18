@@ -7,7 +7,7 @@ public class CharMap<T> where T : new()
     public CharMap(string[] input, Func<char, int, int, T> mapper, int start = 0, int end = -1)
     {
         var actualEnd = end == -1 ? input.Length : end;
-        var actualLength = end - start;
+        var actualLength = actualEnd - start;
         _map = new T[actualLength][];
         for (int i = start; i < actualEnd; i++)
         {
@@ -144,6 +144,19 @@ public class CharMap<T> where T : new()
 public class CharMap : CharMap<char>
 {
     public CharMap(string[] input, int start = 0, int end = -1) : base(input, c => c, start, end) { }
+    public CharMap(string[] input, Func<char, int, int, char> mapper, int start = 0, int end = -1) : base(input, mapper, start, end) { }
+    
+    public CharMap(char[][] input, int start = 0, int end = -1) : this(
+        input.Select(it => it.Aggregate("", (acc, curr) => acc + curr)).ToArray(), 
+        start, 
+        end
+    ) { }
+    public CharMap(char[][] input, Func<char, int, int, char> mapper, int start = 0, int end = -1) : this(
+        input.Select(it => it.Aggregate("", (acc, curr) => acc + curr)).ToArray(), 
+        mapper, 
+        start, 
+        end
+    ) { }
     public CharMap(int height, int width, Func<int, int, char> mapper) : base(height, width, mapper) { }
     public CharMap(int height, int width, Func<char> mapper) : this(height, width, (_, _) => mapper()) { }
     public CharMap(int height, int width, char value = '.') : this(height, width, () => value) { }

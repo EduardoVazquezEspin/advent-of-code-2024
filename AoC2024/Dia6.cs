@@ -133,7 +133,7 @@ public class Dia6 : ProblemSolution<Dia6Input>
         }
     }
     
-    public override IFormattable Part1(Dia6Input input)
+    public override object Part1(Dia6Input input)
     {
         var map = input.Map;
         var position = input.InitialPosition;
@@ -212,7 +212,7 @@ public class Dia6 : ProblemSolution<Dia6Input>
         return false;
     }
     
-    public override IFormattable Part2(Dia6Input input)
+    public override object Part2(Dia6Input input)
     {
         var originalTravel = CopyMap( input.Map, (char c) => c);
         var position = new Tuple<int, int>(input.InitialPosition.Item1, input.InitialPosition.Item2);

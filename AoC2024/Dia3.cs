@@ -16,7 +16,7 @@ public class Dia3 : ProblemSolution<string>
 
     private readonly Regex _mulRegex = new Regex(@"mul\((\d+),(\d+)\)");
     
-    public override IFormattable Part1(string input)
+    public override object Part1(string input)
     {
         var total = 0;
         
@@ -67,7 +67,7 @@ public class Dia3 : ProblemSolution<string>
         return type;
     }
     
-    public override IFormattable Part2(string input)
+    public override object Part2(string input)
     {
         int total = 0;
         bool isEnabled = true;

@@ -95,12 +95,12 @@ public class Dia10 : ProblemSolution<Dia10Input>
         return map.MapAllCells((value, i, j) => value == 9 && hasBeenVisited[i][j] ? numberOfVisits[i][j] : 0).Sum();
     }
 
-    public override IFormattable Part1(Dia10Input input)
+    public override object Part1(Dia10Input input)
     {
         return input.Trailheads.Aggregate(0, (acc, curr) => acc + CountTrails(input.Map, curr));
     }
 
-    public override IFormattable Part2(Dia10Input input)
+    public override object Part2(Dia10Input input)
     {
         return input.Trailheads.Aggregate(0, (acc, curr) => acc + CalculateRating(input.Map, curr));
     }

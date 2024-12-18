@@ -66,7 +66,7 @@ public class Dia7 : ProblemSolution<List<Equation>>
         return hasProdSolution;
     }
 
-    public override IFormattable Part1(List<Equation> input)
+    public override object Part1(List<Equation> input)
     {
         return input.Aggregate(0L, (acc, curr) =>
         {
@@ -124,7 +124,7 @@ public class Dia7 : ProblemSolution<List<Equation>>
         return hasConcatSolution;
     }
 
-    public override IFormattable Part2(List<Equation> input)
+    public override object Part2(List<Equation> input)
     {
         return input.Aggregate(0L, (acc, curr) =>
         {

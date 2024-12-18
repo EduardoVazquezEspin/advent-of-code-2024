@@ -130,13 +130,13 @@ public class Dia14 : ProblemSolution<Dia14Input>
         return total;
     }
 
-    public override IFormattable Part1(Dia14Input input)
+    public override object Part1(Dia14Input input)
     {
         var results = input.RobotData.Select(roboData => RoboIterate(roboData, input.MapData));
         return EvaluateRobots(results.Select(it => it.Position), input.MapData);
     }
 
-    public override IFormattable Part2(Dia14Input input)
+    public override object Part2(Dia14Input input)
     {
         var positions = input.RobotData;
         string? userInput;

@@ -67,7 +67,7 @@ public class Dia12 : ProblemSolution<CharMap>
         return price;
     }
 
-    public override IFormattable Part1(CharMap input)
+    public override object Part1(CharMap input)
     {
         return CalculatePrice1(input);
     }
@@ -160,7 +160,7 @@ public class Dia12 : ProblemSolution<CharMap>
         return price;
     }
 
-    public override IFormattable Part2(CharMap input)
+    public override object Part2(CharMap input)
     {
         return CalculatePrice2(input);
     }
