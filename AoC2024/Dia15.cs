@@ -101,7 +101,7 @@ public class Dia15 : ProblemSolution<Dia15Input>
 
     private DuplicationResult DuplicateMap(CharMap map)
     {
-        Tuple<int, int> playerPosition = null;
+        Tuple<int, int>? playerPosition = null;
         var copy = new CharMap(map.Height, 2 * map.Width, (i, j) =>
         {
             var c = map.Get(i, j / 2);

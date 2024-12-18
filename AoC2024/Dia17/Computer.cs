@@ -10,7 +10,7 @@ public class Computer
     private int[] _instructions = Array.Empty<int>();
     private readonly List<long> _output;
 
-    private InstructionRunner[] _runners;
+    private readonly InstructionRunner[] _runners;
     
     public Computer(long registerA, long registerB, long registerC)
     {
@@ -52,10 +52,10 @@ public class Computer
             current = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         }
 
-        if (_output.Count > maxOutputSize)
+        if (maxOutputSize != 0 && _output.Count > maxOutputSize)
             throw new Exception("Maximum Output Size Surpassed");
 
-        if (current - start >= maxMs)
+        if (maxMs != 0 && current - start >= maxMs)
             throw new Exception("Timeout");
         
         return _output;

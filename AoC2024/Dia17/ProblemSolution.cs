@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using AoC2024.Helpers;
 
@@ -79,7 +78,7 @@ public class Dia17 : ProblemSolution<Dia17Input>
             {
                 output = computer.Run(input.Program, input.Program.Length, 500);
             }
-            catch (Exception _)
+            catch (Exception)
             {
                 hasError = true;
             }
