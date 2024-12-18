@@ -9,5 +9,7 @@
 // Console.WriteLine(solution.Part2(input));
 // Console.ReadLine();
 
-Console.WriteLine(3 << 4);
+var first = new Tuple<int, int>(0, 0);
+var second = new Tuple<int, int>(0, 0);
+Console.WriteLine(first.Equals(second));
 Console.ReadLine();

@@ -185,7 +185,7 @@ public static class GraphAlgorithms
     }
     
     public static Dictionary<T, int> BreadthFirstSearch<T>(T startingNode, Func<T, T[]> getNeighbours, Predicate<T>? stop = null, Action<T>? action = null)
-        where T: IEquatable<T> =>
+        where T: notnull =>
         BreadthFirstSearch(new []{ startingNode }, getNeighbours, stop, action);
     
     public static Dictionary<T, int> Dijkstra<T>(
