@@ -9,7 +9,8 @@
 // Console.WriteLine(solution.Part2(input));
 // Console.ReadLine();
 
-var first = new Tuple<int, int>(0, 0);
-var second = new Tuple<int, int>(0, 0);
-Console.WriteLine(first.Equals(second));
+var dict = new Dictionary<int, string?>();
+Console.WriteLine(dict.TryGetValue(1, out _));
+dict.Add(1, null);
+Console.WriteLine(dict.TryGetValue(1, out _));
 Console.ReadLine();

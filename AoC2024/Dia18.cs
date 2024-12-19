@@ -52,7 +52,7 @@ public class Dia18 : ProblemSolution<Dia18Input>
 
     private Func<Tuple<int, int>, Tuple<int, int>[]> MakeGetNeighbours(CharMap map) =>  position =>
         Direction.Directions
-            .Select(directionType => Direction.GetVector(directionType))
+            .Select(Direction.GetVector)
             .Select(vector => new Tuple<int, int>(position.Item1 + vector.Item1, position.Item2 + vector.Item2))
             .Where(it =>
             {
