@@ -9,8 +9,10 @@
 // Console.WriteLine(solution.Part2(input));
 // Console.ReadLine();
 
-var dict = new Dictionary<int, string?>();
-Console.WriteLine(dict.TryGetValue(1, out _));
-dict.Add(1, null);
-Console.WriteLine(dict.TryGetValue(1, out _));
+var order = new char[] {'<', '>', '^', 'v', 'A'};
+
+var array = "<>^vA<>^vA<>^vA<>^vA<>^vA".ToArray();
+Array.Sort(array, (c, c1) => Array.IndexOf(order, c) - Array.IndexOf(order, c1));
+
+Console.WriteLine(array.Aggregate("", (acc, curr) => acc +curr));
 Console.ReadLine();

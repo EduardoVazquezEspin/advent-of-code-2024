@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using AoC2024.Classes;
 
 namespace AoC2024.Helpers;
@@ -143,6 +142,7 @@ public static class GraphAlgorithms
     public static Dictionary<T, int> BreadthFirstSearch<T>(
         T[] startingNodes, 
         Func<T, T[]> getNeighbours, 
+        out Dictionary<T, T> comesFrom,
         Predicate<T>? stop = null,
         Action<T>? action = null
     ) where T: notnull
@@ -159,6 +159,7 @@ public static class GraphAlgorithms
                 action(node);
             
         var distance = new Dictionary<T, int>();
+        comesFrom = new Dictionary<T, T>();
         foreach (var node in startingNodes)
             distance.Add(node, 0);
         
@@ -173,6 +174,7 @@ public static class GraphAlgorithms
             foreach (var neighbour in neighbours)
             {
                 distance.Add(neighbour, dist + 1);
+                comesFrom.Add(neighbour, node);
                 if(action != null)
                     action(node);
                 if (stop != null && stop(neighbour))
@@ -184,39 +186,58 @@ public static class GraphAlgorithms
         return distance;
     }
     
+    public static Dictionary<T, int> BreadthFirstSearch<T>(T startingNode, Func<T, T[]> getNeighbours, out Dictionary<T, T> comesFrom, Predicate<T>? stop = null, Action<T>? action = null)
+        where T: notnull =>
+        BreadthFirstSearch(new []{ startingNode }, getNeighbours, out comesFrom, stop, action);
+    
+    public static Dictionary<T, int> BreadthFirstSearch<T>(T[] startingNodes, Func<T, T[]> getNeighbours, Predicate<T>? stop = null, Action<T>? action = null)
+        where T: notnull =>
+        BreadthFirstSearch(startingNodes, getNeighbours, out _, stop, action);
+    
     public static Dictionary<T, int> BreadthFirstSearch<T>(T startingNode, Func<T, T[]> getNeighbours, Predicate<T>? stop = null, Action<T>? action = null)
         where T: notnull =>
-        BreadthFirstSearch(new []{ startingNode }, getNeighbours, stop, action);
+        BreadthFirstSearch(new []{ startingNode }, getNeighbours, out _, stop, action);
+
+    private struct DijkstraNode<T>
+    {
+        public T Node { get; init; }
+        public T? Parent { get; init; }
+        public bool IsRoot { get; init; }
+    }
     
     public static Dictionary<T, int> Dijkstra<T>(
         T[] startingNodes, 
         Func<T, Tuple<T, int>[]> getNeighbours,
+        out Dictionary<T, T> comesFrom,
         Predicate<T>? stop = null,
         Action<T>? action = null
     ) where T: notnull
     {
-        var priorityQueue = new PriorityQueue<T, int>();
+        var priorityQueue = new PriorityQueue<DijkstraNode<T>, int>();
         foreach(var start in startingNodes)
-            priorityQueue.Enqueue(start, 0);
+            priorityQueue.Enqueue(new DijkstraNode<T>{ Node = start, IsRoot = true}, 0);
 
         if(action != null)
             foreach (var node in startingNodes)
                 action(node);
             
         var distance = new Dictionary<T, int>();
+        comesFrom = new Dictionary<T, T>();
         
-        while (priorityQueue.TryDequeue(out T? top, out int priority))
+        while (priorityQueue.TryDequeue(out var top, out int priority))
         {
-            if(distance.ContainsKey(top))
+            if(distance.ContainsKey(top.Node))
                 continue;
-            distance.Add(top, priority);
+            distance.Add(top.Node, priority);
+            if(!top.IsRoot)
+                comesFrom.Add(top.Node, top.Parent!);
             if(action != null)
-                action(top);
-            if (stop != null && stop(top))
+                action(top.Node);
+            if (stop != null && stop(top.Node))
                 return distance;
-            var neighbours = getNeighbours(top).Where(neighbour => !distance.ContainsKey(neighbour.Item1));
+            var neighbours = getNeighbours(top.Node).Where(neighbour => !distance.ContainsKey(neighbour.Item1));
             foreach (var (neighbour, dist) in neighbours)
-                priorityQueue.Enqueue(neighbour, priority + dist);
+                priorityQueue.Enqueue(new DijkstraNode<T>{Node =neighbour, Parent = top.Node, IsRoot = false}, priority + dist);
             
         }
 
@@ -226,8 +247,25 @@ public static class GraphAlgorithms
     public static Dictionary<T, int> Dijkstra<T>(
         T startingNode,
         Func<T, Tuple<T, int>[]> getNeighbours,
+        out Dictionary<T, T> comesFrom,
         Predicate<T>? stop = null,
         Action<T>? action = null
     ) where T : notnull =>
-        Dijkstra(new [] {startingNode}, getNeighbours, stop, action);
+        Dijkstra(new [] {startingNode}, getNeighbours, out comesFrom, stop, action);
+    
+    public static Dictionary<T, int> Dijkstra<T>(
+        T[] startingNodes, 
+        Func<T, Tuple<T, int>[]> getNeighbours,
+        Predicate<T>? stop = null,
+        Action<T>? action = null
+    ) where T : notnull =>
+        Dijkstra(startingNodes, getNeighbours, out _, stop, action);
+    
+    public static Dictionary<T, int> Dijkstra<T>(
+        T startingNode,
+        Func<T, Tuple<T, int>[]> getNeighbours,
+        Predicate<T>? stop = null,
+        Action<T>? action = null
+    ) where T : notnull =>
+        Dijkstra(new [] {startingNode}, getNeighbours, out _, stop, action);
 }
