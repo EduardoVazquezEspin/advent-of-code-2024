@@ -10,12 +10,12 @@ public abstract class RobotController
 
     private int EvaluateTransition(char from, char to) => from != to ? 1024 : 1;
 
-    private readonly char[] _charOrder = new[] {'<', '>', '^', 'v'};
+    private readonly char[] _charOrder = new[] { '<', 'v', '^', '>' };
     
     private string Sort(string input, bool flipped)
     {
         var array = input.ToArray();
-        Array.Sort(array, (c, c1) => (flipped ? 1 : -1) *(Array.IndexOf(_charOrder, c)-Array.IndexOf(_charOrder, c1)) );
+        Array.Sort(array, (c, c1) => (flipped ? -1 : 1) *(Array.IndexOf(_charOrder, c)-Array.IndexOf(_charOrder, c1)) );
         return array.Aggregate("", (acc, curr) => acc + curr );
     }
 
@@ -53,6 +53,14 @@ public abstract class RobotController
             solution.Add(second);
 
         return solution.ToArray();
+    }
+
+    private string GetSortedSequence(char start, string result)
+    {
+        var sorted = Sort(result, false);
+        if (IsPathValid(start, sorted))
+            return sorted;
+        return result;
     }
     
     private struct DirectionNode
@@ -126,5 +134,62 @@ public abstract class RobotController
         }
 
         return result.ToArray();
+    }
+    
+        public string GetGreedyInput(string input)
+    {
+        var position = 'A';
+        var result = "";
+        DirectionNode finalNode = default;
+        foreach (var node in input)
+        {
+            GraphAlgorithms.Dijkstra(new []
+                {
+                    new DirectionNode{ Position = position, Direction = '^'},
+                    new DirectionNode{ Position = position, Direction = '>'},
+                    new DirectionNode{ Position = position, Direction = '<'},
+                    new DirectionNode{ Position = position, Direction = 'v'},
+                }, (directionNode => GetNeighbours(directionNode.Position)
+                        .Select(neighbour =>
+                            new DirectionNode
+                            {
+                                Position = neighbour,
+                                Direction = GetDirection(directionNode.Position, neighbour)
+                            })
+                        .Select(neighbourNode => new Tuple<DirectionNode, int>(
+                            neighbourNode,
+                            EvaluateTransition(directionNode.Direction, neighbourNode.Direction))
+                        )
+                        .ToArray()
+                ), 
+                out var comesFrom, 
+                target=>
+                {
+                    if (target.Position != node)
+                        return false;
+                    finalNode = target;
+                    return true;
+                });
+
+            string sequence = "";
+            var hasPreviousValue = true;
+            
+            DirectionNode current = finalNode;
+            
+            while (hasPreviousValue)
+            {
+                hasPreviousValue = comesFrom.TryGetValue(current, out var previous);
+                if (hasPreviousValue)
+                {
+                    sequence = current.Direction + sequence;
+                    current = previous;
+                }
+            }
+
+            position = node;
+            result += GetSortedSequence(current.Position, sequence) + 'A';
+        }
+
+        return result;
     }
 }
