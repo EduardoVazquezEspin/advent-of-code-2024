@@ -136,7 +136,7 @@ public abstract class RobotController
         return result.ToArray();
     }
     
-        public string GetGreedyInput(string input)
+    public string GetGreedyInput(string input)
     {
         var position = 'A';
         var result = "";
