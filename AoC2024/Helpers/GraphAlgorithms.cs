@@ -268,4 +268,119 @@ public static class GraphAlgorithms
         Action<T>? action = null
     ) where T : notnull =>
         Dijkstra(new [] {startingNode}, getNeighbours, out _, stop, action);
+
+    public static List<ValueTuple<T, T, T>> FindAllTriangles<T>(List<T> nodes, Func<T, List<T>> connectedTo)
+    {
+        var result = new List<ValueTuple<T, T, T>>();
+        
+        for (int i = 0; i < nodes.Count - 1; i++)
+        {
+            var node = nodes[i];
+            var neighbours = connectedTo(node);
+            foreach(var neighbour in neighbours)
+            {
+                var cousins = connectedTo(neighbour);
+
+                foreach (var third in neighbours)
+                    if (cousins.Contains(third))
+                    {
+                        if(!result.Contains((node, neighbour, third)) && 
+                           !result.Contains((node, third, neighbour)) &&
+                           !result.Contains((neighbour, node, third)) &&
+                           !result.Contains((neighbour, third, node)) &&
+                           !result.Contains((third, node, neighbour )) &&
+                           !result.Contains((third, neighbour, node)) )
+                            result.Add((node, neighbour, third));
+                    }
+            }    
+        }
+
+        return result;
+    }
+
+    private static void BackTrackFindMaximumClique<T>(
+        int index, 
+        bool[] isContained,
+        bool[][] areConnected,
+        int[] nextNeighbour,
+        List<T> points,
+        ref List<T> result)
+    {
+        var total = 1;
+        for (int i = 0; i < index; i++)
+            total += isContained[i] ? 1 : 0;
+        if (total + points.Count - index <= result.Count)
+            return;
+        
+        if (index == points.Count)
+        {
+            var list = new List<T>();
+            for(int i =0; i<points.Count; i++)
+                if(isContained[i])
+                    list.Add(points[i]);
+            result = list;
+            return;
+        }
+
+        isContained[index] = false;
+        BackTrackFindMaximumClique(
+            index+1, 
+            isContained, 
+            areConnected, 
+            nextNeighbour,
+            points,
+            ref result);
+
+        bool isConnectedToAllPrevious = true;
+        for (int i = 0; i < index && isConnectedToAllPrevious; i++)
+            isConnectedToAllPrevious = !isContained[i] || areConnected[i][index];
+
+        if (isConnectedToAllPrevious)
+        {
+            isContained[index] = true;
+            var nextNeighbourIndex = nextNeighbour[index] != -1 ? nextNeighbour[index] : points.Count;
+            BackTrackFindMaximumClique(
+                nextNeighbourIndex, 
+                isContained, 
+                areConnected, 
+                nextNeighbour,
+                points,
+                ref result);
+            
+            isContained[index] = false;
+        }
+    }
+
+    public static List<T> FindMaximumClique<T>(List<T> points, Func<T, List<T>> connectedTo)
+    {
+        var result = new List<T>();
+        bool[] isContained = new bool[points.Count];
+        bool[][] isConnectedTo = new bool[points.Count][];
+        int[] nextNeighbour = new int[points.Count];
+        for (int i = 0; i < points.Count; i++)
+        {
+            isConnectedTo[i] = new bool[points.Count];
+            nextNeighbour[i] = -1;
+        }
+            
+
+        for (int i = 0; i < points.Count - 1; i++)
+        {
+            var localNeighbours = connectedTo(points[i]);
+            for (int j = i + 1; j < points.Count; j++)
+            {
+                var areConnected = localNeighbours.Contains(points[j]);
+                isConnectedTo[i][j] = areConnected;
+                isConnectedTo[j][i] = areConnected;
+                if (areConnected && nextNeighbour[i] == -1)
+                    nextNeighbour[i] = j;
+            }
+        }
+
+        BackTrackFindMaximumClique(0, isContained, isConnectedTo, nextNeighbour, points, ref result);
+
+        return result;
+    }
+
+
 }
